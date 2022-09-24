@@ -1,22 +1,42 @@
 # MysqlBinlogStream
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/mysql_binlog_stream`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
-Install the gem and add to the application's Gemfile by executing:
+Add this line to your application's Gemfile:
 
-    $ bundle add mysql_binlog_stream
+```ruby
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+gem 'mysql_binlog_stream', github: 'shoma07/mysql_binlog_stream'
+```
 
-    $ gem install mysql_binlog_stream
+And then execute:
+
+```sh
+$ bundle install
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'mysql_binlog_stream'
+
+config = MysqlBinlogStream::Config.new(
+  host: '0.0.0.0',
+  port: 3306,
+  user: 'user',
+  password: 'password',
+  database: 'database'
+)
+
+MysqlBinlogStream::Stream.new(config).each do |event|
+  pp event.to_h
+end
+```
+
+## References
+
+- [jeremycole/mysql_binlog](https://github.com/jeremycole/mysql_binlog)
 
 ## Development
 
