@@ -16,7 +16,7 @@ module MysqlBinlogStream
 
     # @return [void]
     def each(&block)
-      return Enumerable::Enumerator.new(self, :each) unless block
+      return ::Enumerator.new { |y| each { |row_image| y << row_image } } unless block
 
       @context.information_schema.update
 

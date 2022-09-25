@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:debian
+    platform: linux/amd64
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - db-data:/var/lib/mysql
+  gem:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    platform: linux/amd64
+    volumes:
+      - .:/usr/src/gem
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    depends_on:
+      - db
+
+volumes:
+  db-data:
+    driver: local

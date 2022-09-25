@@ -14,7 +14,7 @@ module MysqlBinlogStream
     end
 
     def each(&block)
-      return Enumerable::Enumerator.new(self, :each) unless block
+      return ::Enumerator.new { |y| each { |value| y << value } } unless block
 
       @stdout.nil? && start
       @stdout.each_line(chomp: true).reduce(nil) do |acc, elem|

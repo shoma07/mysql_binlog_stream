@@ -22,7 +22,8 @@ require_relative 'mysql_binlog_stream/table_map'
 require_relative 'mysql_binlog_stream/parsers'
 require_relative 'mysql_binlog_stream/stream'
 
+# MysqlBinlogStream
 module MysqlBinlogStream
+  # MysqlBinlogStream::Error
   class Error < StandardError; end
-  # Your code goes here...
 end
