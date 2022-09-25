@@ -22,7 +22,6 @@ module MysqlBinlogStream
 
       @reader.each do |binary_io|
         event = @parser.parse(binary_io, @context)
-        next @context.update_format_description(event) if event.is_a?(FormatDescription)
         next @context.update_table_map(event) if event.is_a?(TableMap)
         next unless event.is_a?(RowImage::List)
 

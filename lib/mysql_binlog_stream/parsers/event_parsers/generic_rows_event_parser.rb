@@ -5,6 +5,9 @@ module MysqlBinlogStream
     module EventParsers
       # MysqlBinlogStream::Parsers::EventParsers::GenericRowsEventParser
       class GenericRowsEventParser
+        CHECKSUM_LENGTH = 4
+        private_constant :CHECKSUM_LENGTH
+
         # @!attribute [r] event_name
         # @return [Symbol]
         attr_reader :event_name
@@ -23,13 +26,13 @@ module MysqlBinlogStream
           table_id = binary_io.read_uint48
           table_map = context.table_map_by_table_id(table_id)
           information_schema = context.information_schema
-          flags = binary_io.read_uint16
+          binary_io.read_uint16 # ignore flags
           skip_variable_header(binary_io)
           columns = binary_io.read_varint
           before_used = (binary_io.read_bit_array(columns) if parse_before?)
           after_used = (binary_io.read_bit_array(columns) if parse_after?)
           row_images = loop.reduce([]) do |acc, _elem|
-            break acc if binary_io.remaining <= 4
+            break acc if binary_io.remaining <= CHECKSUM_LENGTH
 
             before = (parse_row_image(binary_io, information_schema, table_map, before_used) if before_used)
             after = (parse_row_image(binary_io, information_schema, table_map, after_used) if after_used)

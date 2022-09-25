@@ -18,10 +18,8 @@ module MysqlBinlogStream
         # @param _binary_io [MysqlBinlogStream::BinaryIO]
         # @param _header [MysqlBinlogStream::Header]
         # @param _context [MysqlBinlogStream::Context]
-        # @return [Hash]
-        def parse(_binary_io, _header, _context)
-          {}
-        end
+        # @return [nil]
+        def parse(_binary_io, _header, _context); end
       end
     end
   end

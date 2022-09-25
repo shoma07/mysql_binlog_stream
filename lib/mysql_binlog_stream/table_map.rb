@@ -45,14 +45,12 @@ module MysqlBinlogStream
     attr_reader :columns
 
     # @param table_id [Integer]
-    # @param flags [Integer]
     # @param db [String]
     # @param table [String]
     # @param columns [Array<MysqlBinlogStream::TableMap::Column>]
     # @return [void]
-    def initialize(table_id:, flags:, db:, table:, columns:)
+    def initialize(table_id:, db:, table:, columns:)
       @table_id = table_id
-      @flags = flags
       @db = db
       @table = table
       @columns = columns

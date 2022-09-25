@@ -3,7 +3,6 @@
 module MysqlBinlogStream
   # MysqlBinlogStream::EventType
   class EventType
-    FORMAT_DESCRIPTION_EVENT = :format_description_event
     TABLE_MAP_EVENT = :table_map_event
     WRITE_ROWS_EVENT_V1 = :write_rows_event_v1
     UPDATE_ROWS_EVENT_V1 = :update_rows_event_v1

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'event_parsers/unsupported_event_parser'
-require_relative 'event_parsers/format_description_event_parser'
 require_relative 'event_parsers/table_map_event_parser'
 require_relative 'event_parsers/generic_rows_event_parser'
 
@@ -26,7 +25,7 @@ module MysqlBinlogStream
         12 => UnsupportedEventParser.new(:new_load_event), # (deprecated)
         13 => UnsupportedEventParser.new(:rand_event),
         14 => UnsupportedEventParser.new(:user_var_event),
-        15 => FormatDescriptionEventParser.new,
+        15 => UnsupportedEventParser.new(:format_description_event),
         16 => UnsupportedEventParser.new(:xid_event),
         17 => UnsupportedEventParser.new(:begin_load_query_event),
         18 => UnsupportedEventParser.new(:execute_load_query_event),
@@ -55,41 +54,6 @@ module MysqlBinlogStream
       }.freeze
       private_constant :PARSERS
 
-      MYSQL_TYPES = {
-        0 => :decimal,
-        1 => :tiny,
-        2 => :short,
-        3 => :long,
-        4 => :float,
-        5 => :double,
-        6 => :null,
-        7 => :timestamp,
-        8 => :longlong,
-        9 => :int24,
-        10 => :date,
-        11 => :time,
-        12 => :datetime,
-        13 => :year,
-        14 => :newdate,
-        15 => :varchar,
-        16 => :bit,
-        17 => :timestamp2,
-        18 => :datetime2,
-        19 => :time2,
-        245 => :json,
-        246 => :newdecimal,
-        247 => :enum,
-        248 => :set,
-        249 => :tiny_blob,
-        250 => :medium_blob,
-        251 => :long_blob,
-        252 => :blob,
-        253 => :var_string,
-        254 => :string,
-        255 => :geometry
-      }.freeze
-      private_constant :MYSQL_TYPES
-
       class << self
         # @param event_type_value [Integer]
         # @return [#parse, #event_name]
@@ -100,7 +64,7 @@ module MysqlBinlogStream
         # @param type_value [Integer]
         # @return [Symbol]
         def mysql_type(type_value)
-          MYSQL_TYPES[type_value] || :"unknown_#{type_value}"
+          ::MysqlBinlog::MYSQL_TYPES[type_value] || :"unknown_#{type_value}"
         end
       end
     end

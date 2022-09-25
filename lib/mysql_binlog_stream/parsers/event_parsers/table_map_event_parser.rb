@@ -16,20 +16,19 @@ module MysqlBinlogStream
         # @return [MysqlBinlogStream::TableMap]
         def parse(binary_io, _header, _context)
           table_id = binary_io.read_uint48
-          flags = binary_io.read_uint16
+          binary_io.read_uint16 # ignore flags
           db = binary_io.read_lpstringz
           table = binary_io.read_lpstringz
-          columns = binary_io.read_varint
-          columns_type = binary_io.read_uint8_array(columns).map { |c| EventParsers.mysql_type(c) }
+          columns_size = binary_io.read_varint
+          columns_type = binary_io.read_mysql_type_names(columns_size)
           binary_io.read_varint
           columns_metadata = columns_type.map { |column_type| parse_column_metadata(binary_io, column_type) }
-          columns_nullable = binary_io.read_bit_array(columns)
+          columns_nullable = binary_io.read_bit_array(columns_size)
           TableMap.new(
             table_id: table_id,
-            flags: flags,
             db: db,
             table: table,
-            columns: columns.times.map.with_index do |column, index|
+            columns: columns_size.times.map.with_index do |column, index|
               TableMap::Column.new(
                 index: index,
                 type: columns_metadata[column]&.fetch(:type, nil) || columns_type[column],

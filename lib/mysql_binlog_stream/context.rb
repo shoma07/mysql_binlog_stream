@@ -16,19 +16,6 @@ module MysqlBinlogStream
       @current_record_id = 0
     end
 
-    # @param format_description [MysqlBinlogReader::Objects::Events::FormatDescription]
-    # @return [void]
-    def update_format_description(format_description)
-      @format_description = format_description
-    end
-
-    # @return [MysqlBinlogReader::Objects::Events::FormatDescription]
-    def format_description
-      raise 'format_description is not set.' unless @format_description
-
-      @format_description
-    end
-
     # @param table_map [MysqlBinlogReader::Objects::Events::TableMap]
     # @return [void]
     def update_table_map(table_map)
