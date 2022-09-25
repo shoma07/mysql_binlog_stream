@@ -6,3 +6,12 @@ require:
 
 AllCops:
   NewCops: enable
+
+Metrics/MethodLength:
+  Enabled: true
+  CountComments: false
+  Max: 10
+  CountAsOne:
+    - array
+    - hash
+    - heredoc

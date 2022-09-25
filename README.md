@@ -1,6 +1,20 @@
 # MysqlBinlogStream
 
+## Dependencies
+
+- [mysqlbinlog - Utility for Processing Binary Log Files](https://dev.mysql.com/doc/refman/8.0/en/mysqlbinlog.html)
+- mysql client
+
 ## Installation
+
+### Using `specific_install`
+
+```sh
+$ gem install specific_install
+$ gem specific_install https://github.com/shoma07/mysql_binlog_stream.git
+```
+
+### Using `bundler`
 
 Add this line to your application's Gemfile:
 
@@ -17,6 +31,13 @@ $ bundle install
 ```
 
 ## Usage
+
+```sh
+# command-line
+# mysql-binlog-stream --help
+$ mysql-binlog-stream --host 0.0.0.0 --port 3306 --user user
+Enter password:
+```
 
 ```ruby
 require 'mysql_binlog_stream'

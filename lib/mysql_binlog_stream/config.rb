@@ -28,8 +28,10 @@ module MysqlBinlogStream
     # @return [Integer]
     attr_reader :start_timestamp
 
-    def initialize(
-      user:, password:, server_id: 111_111,
+    def initialize( # rubocop:todo Metrics/ParameterLists
+      user:,
+      password:,
+      server_id: 111_111,
       host: '0.0.0.0',
       port: 3306,
       database: nil,

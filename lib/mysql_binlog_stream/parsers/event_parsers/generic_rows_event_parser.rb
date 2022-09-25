@@ -22,39 +22,50 @@ module MysqlBinlogStream
         # @param header [MysqlBinlogStream::Header]
         # @param context [MysqlBinlogStream::Context]
         # @return [Hash]
-        def parse(binary_io, header, context)
-          table_id = binary_io.read_uint48
-          table_map = context.table_map_by_table_id(table_id)
+        def parse(binary_io, header, context) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+          table_map = context.table_map_by_table_id(binary_io.read_uint48)
           information_schema = context.information_schema
           binary_io.read_uint16 # ignore flags
           skip_variable_header(binary_io)
           columns = binary_io.read_varint
           before_used = (binary_io.read_bit_array(columns) if parse_before?)
           after_used = (binary_io.read_bit_array(columns) if parse_after?)
-          row_images = loop.reduce([]) do |acc, _elem|
+          loop.reduce(MysqlBinlogStream::RowImage::List.new(row_images: [])) do |acc, _elem|
             break acc if binary_io.remaining <= CHECKSUM_LENGTH
 
-            before = (parse_row_image(binary_io, information_schema, table_map, before_used) if before_used)
-            after = (parse_row_image(binary_io, information_schema, table_map, after_used) if after_used)
-            acc + [
-              RowImage.new(
-                metadata: RowImage::Metadata.new(
-                  db: table_map.db,
-                  table: table_map.table,
-                  operation: operation,
-                  timestamp: header.timestamp,
-                  timestamp_record_id: context.timestamp_record_id(header.timestamp)
-                ),
-                before: (before if after),
-                data: after || before
-              )
-            ]
+            MysqlBinlogStream::RowImage::List.new(
+              row_images: acc.row_images + [
+                generate_row_image(
+                  table_map, header, context,
+                  parse_row_image(binary_io, information_schema, table_map, before_used),
+                  parse_row_image(binary_io, information_schema, table_map, after_used)
+                )
+              ]
+            )
           end
-
-          RowImage::List.new(row_images: row_images)
         end
 
         private
+
+        # @param table_map [MysqlBinlogStream::TableMap]
+        # @param header [MysqlBinlogStream::Header]
+        # @param context [MysqlBinlogStream::Context]
+        # @param before [Hash, nil]
+        # @param after [Hash, nil]
+        # @return [MysqlBinlogStream::RowImage]
+        def generate_row_image(table_map, header, context, before, after)
+          MysqlBinlogStream::RowImage.new(
+            metadata: MysqlBinlogStream::RowImage::Metadata.new(
+              db: table_map.db,
+              table: table_map.table,
+              operation: operation,
+              timestamp: header.timestamp,
+              timestamp_record_id: context.timestamp_record_id(header.timestamp)
+            ),
+            before: (before if after),
+            data: after || before
+          )
+        end
 
         # @return [Boolean]
         def contains_variable_header?
@@ -75,8 +86,10 @@ module MysqlBinlogStream
         # @param information_schema [MysqlBinlogReader::InformationSchema]
         # @param table_map [MysqlBinlogReader::Objects::TableMap]
         # @param columns [Array]
-        # @return [Hash]
+        # @return [Hash, nil]
         def parse_row_image(binary_io, information_schema, table_map, columns_used)
+          return unless columns_used
+
           columns_null = binary_io.read_bit_array(columns_used.size)
           table_map.columns.to_h do |column|
             column_name = information_schema.column_name(table_map.db, table_map.table, column.index)

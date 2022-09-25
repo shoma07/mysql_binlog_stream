@@ -3,6 +3,9 @@
 module MysqlBinlogStream
   # MysqlBinlogStream::SQLExecutor
   class SQLExecutor
+    # MysqlBinlogStream::SQLExecutor::Error
+    class Error < StandardError; end
+
     # @param config [MysqlBinlogStream::Config]
     def initialize(config)
       @config = config
@@ -11,19 +14,15 @@ module MysqlBinlogStream
     # @param sql [String]
     # @return [Array<Hash>]
     def execute(sql)
-      o, e, s = Open3.capture3(
+      output, error, status = Open3.capture3(
         [
-          'mysql',
-          "-h #{@config.host}",
-          "-u #{@config.user}",
-          "-P #{@config.port}",
-          "--password=#{@config.password}",
-          "-e '#{sql}'",
-          "| sed -e 's/\t/,/g'"
-        ].join(' ')
+          "mysql -h #{@config.host} -u #{@config.user} -P #{@config.port} --password=#{@config.password} -e '#{sql}'",
+          "sed -e 's/\t/,/g'"
+        ].join(' | ')
       )
+      raise Error, error unless status.success?
 
-      CSV.parse(o, headers: true).map(&:to_h)
+      CSV.parse(output, headers: true).map(&:to_h)
     end
   end
 end
