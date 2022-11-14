@@ -16,7 +16,6 @@ namespace :lint do
 end
 
 # rspec
-# Rake::Task['spec'].clear
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.rspec_opts = '-p'
