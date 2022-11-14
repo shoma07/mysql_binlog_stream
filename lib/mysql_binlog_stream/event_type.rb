@@ -3,13 +3,21 @@
 module MysqlBinlogStream
   # MysqlBinlogStream::EventType
   class EventType
+    # @return [Symbol]
     TABLE_MAP_EVENT = :table_map_event
+    # @return [Symbol]
     WRITE_ROWS_EVENT_V1 = :write_rows_event_v1
+    # @return [Symbol]
     UPDATE_ROWS_EVENT_V1 = :update_rows_event_v1
+    # @return [Symbol]
     DELETE_ROWS_EVENT_V1 = :delete_rows_event_v1
+    # @return [Symbol]
     WRITE_ROWS_EVENT_V2 = :write_rows_event_v2
+    # @return [Symbol]
     UPDATE_ROWS_EVENT_V2 = :update_rows_event_v2
+    # @return [Symbol]
     DELETE_ROWS_EVENT_V2 = :delete_rows_event_v2
+    # @return [Set<Symbol>]
     GENERIC_ROWS_EVENTS = Set.new(
       [
         WRITE_ROWS_EVENT_V1,

@@ -5,6 +5,7 @@ module MysqlBinlogStream
     module EventParsers
       # MysqlBinlogStream::Parsers::EventParsers::GenericRowsEventParser
       class GenericRowsEventParser
+        # @return [Integer]
         CHECKSUM_LENGTH = 4
         private_constant :CHECKSUM_LENGTH
 
@@ -85,7 +86,7 @@ module MysqlBinlogStream
         # @param binary_io [BinaryIO]
         # @param information_schema [MysqlBinlogReader::InformationSchema]
         # @param table_map [MysqlBinlogReader::Objects::TableMap]
-        # @param columns [Array]
+        # @param columns_used [Array]
         # @return [Hash, nil]
         def parse_row_image(binary_io, information_schema, table_map, columns_used)
           return unless columns_used

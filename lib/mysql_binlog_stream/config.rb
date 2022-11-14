@@ -19,15 +19,24 @@ module MysqlBinlogStream
     # @return [String]
     attr_reader :password
     # @!attribute [r] database
-    # @return [String]
+    # @return [String, nil]
     attr_reader :database
     # @!attribute [r] tables
     # @return [Array<String>]
     attr_reader :tables
     # @!attribute [r] start_timestamp
-    # @return [Integer]
+    # @return [Integer, nil]
     attr_reader :start_timestamp
 
+    # @param user [String]
+    # @param password [String]
+    # @param server_id [Integer]
+    # @param host [String]
+    # @param port [Integer]
+    # @param database [String, nil]
+    # @param tables [Array<String>]
+    # @param start_timestamp [Integer, nil]
+    # @return [void]
     def initialize( # rubocop:todo Metrics/ParameterLists
       user:,
       password:,

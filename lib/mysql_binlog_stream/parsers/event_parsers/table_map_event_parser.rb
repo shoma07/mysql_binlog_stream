@@ -30,7 +30,7 @@ module MysqlBinlogStream
 
         private
 
-        # @parma table_id [Integer]
+        # @param table_id [Integer]
         # @param db [String]
         # @param table [String]
         # @param columns [Array<MysqlBinlogStream::TableMap::Column>]

@@ -13,6 +13,7 @@ module MysqlBinlogStream
       @sql_executor = SQLExecutor.new(@config)
     end
 
+    # @return [void]
     def each(&block)
       return ::Enumerator.new { |y| each { |value| y << value } } unless block
 
