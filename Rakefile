@@ -16,7 +16,7 @@ namespace :lint do
 end
 
 # rspec
-Rake::Task['spec'].clear
+# Rake::Task['spec'].clear
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.rspec_opts = '-p'
@@ -25,7 +25,7 @@ end
 # yard
 ## custom rake task
 desc 'Generate and Check code documents'
-task doc: :environment do
+task :doc do
   require 'yard'
   YARD::CLI::CommandParser.run
   `yard`.lines(chomp: true).last.match(/\d+/)[0].to_i == 100 || exit(1)

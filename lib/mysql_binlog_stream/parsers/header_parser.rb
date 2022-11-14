@@ -4,7 +4,7 @@ module MysqlBinlogStream
   module Parsers
     # MysqlBinlogStream::Parsers::HeaderParser
     class HeaderParser
-      # @param [MysqlBinlogStream::BinaryIO]
+      # @param binary_io [MysqlBinlogStream::BinaryIO]
       # @return [MysqlBinlogStream::Header]
       def parse(binary_io)
         timestamp = binary_io.read_uint32

@@ -3,13 +3,24 @@
 module MysqlBinlogStream
   # MysqlBinlogStream::BinaryIO
   class BinaryIO < DelegateClass(::MysqlBinlog::BinlogFieldParser)
+    # MysqlBinlogStream::BinaryIO::StringIOWrapper
+    class StringIOWrapper < ::StringIO
+      # @param char [String, Integer]
+      # @return [nil]
+      def unget(char)
+        ungetc(char)
+      end
+    end
+
+    private_constant :StringIOWrapper
+
     # MysqlBinlogStream::BinaryIO::Binlog
     class Binlog
       # @!attribute [r] reader
-      # @return [StringIO]
+      # @return [StringIOWrapper]
       attr_reader :reader
 
-      # @param reader [StringIO]
+      # @param reader [StringIOWrapper]
       # @return [void]
       def initialize(reader)
         @reader = reader
@@ -21,7 +32,7 @@ module MysqlBinlogStream
     # @param binary [String]
     # @return [void]
     def initialize(binary)
-      super(::MysqlBinlog::BinlogFieldParser.new(Binlog.new(StringIO.new(binary))))
+      super(::MysqlBinlog::BinlogFieldParser.new(Binlog.new(StringIOWrapper.new(binary))))
     end
 
     # @return [Integer]

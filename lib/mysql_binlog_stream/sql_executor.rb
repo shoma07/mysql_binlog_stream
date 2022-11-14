@@ -7,6 +7,7 @@ module MysqlBinlogStream
     class Error < StandardError; end
 
     # @param config [MysqlBinlogStream::Config]
+    # @return [void]
     def initialize(config)
       @config = config
     end
